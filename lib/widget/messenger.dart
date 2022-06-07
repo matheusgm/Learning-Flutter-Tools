@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:learning_flutter_tools/widget/message.dart';
 
 class Messenger extends StatelessWidget {
   const Messenger({Key? key}) : super(key: key);
@@ -11,9 +12,10 @@ class Messenger extends StatelessWidget {
           child: ListView.builder(
             itemCount: 20,
             itemBuilder: (context, index) {
-              return ListTile(
-                title: Text("$index"),
-              );
+              return index % 2 == 0
+                  ? Message(index.toString() +
+                      " kkkkkkkkkkkkkkkkkkkkkkkkk kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
+                  : Message(index.toString(), alignmentRight: false);
             },
           ),
         ),
