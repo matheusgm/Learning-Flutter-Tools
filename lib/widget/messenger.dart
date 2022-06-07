@@ -36,7 +36,7 @@ class Messenger extends StatelessWidget {
                         child: TextField(
                           decoration: InputDecoration(
                             border: UnderlineInputBorder(),
-                            labelText: 'Enter your username',
+                            hintText: "Message",
                           ),
                         ),
                       ),
