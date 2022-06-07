@@ -15,26 +15,34 @@ class Message extends StatelessWidget {
       mainAxisAlignment: alignmentRight == true
           ? MainAxisAlignment.end
           : MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Container(
-          margin: const EdgeInsets.all(5.0),
-          padding: const EdgeInsets.all(10.0),
-          height: 50,
-          constraints:
-              BoxConstraints(maxWidth: deviceWidth * 0.75, minWidth: 0),
-          decoration: BoxDecoration(
-            color: alignmentRight == true ? Colors.greenAccent : Colors.grey,
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          child: Center(
-            heightFactor: 1,
-            widthFactor: 1,
-            child: Text(
-              text,
-              textAlign: TextAlign.left,
+        Stack(
+          children: [
+            Container(
+              margin: const EdgeInsets.all(5.0),
+              padding: const EdgeInsets.all(10.0),
+              constraints: BoxConstraints(
+                  maxWidth: deviceWidth * 0.75, minWidth: 80, minHeight: 50),
+              decoration: BoxDecoration(
+                color: alignmentRight == true
+                    ? const Color(0xff005c4b)
+                    : const Color(0xff202c33),
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: Text(
+                text,
+                style: const TextStyle(color: Color(0xffe9edef)),
+              ),
             ),
-          ),
+            const Positioned(
+              bottom: 10,
+              right: 12,
+              child: Text(
+                "44:44",
+                style: TextStyle(color: Color(0xff89b3ac), fontSize: 12),
+              ),
+            )
+          ],
         ),
       ],
     );

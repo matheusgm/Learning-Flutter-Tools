@@ -13,9 +13,9 @@ class Messenger extends StatelessWidget {
             itemCount: 20,
             itemBuilder: (context, index) {
               return index % 2 == 0
-                  ? Message(index.toString() +
-                      " kkkkkkkkkkkkkkkkkkkkkkkkk kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
-                  : Message(index.toString(), alignmentRight: false);
+                  ? Message(index.toString() + " k kkkkkkkk")
+                  : Message(index.toString() + "kkkkkkkkkkkkkk kkkkkkkkkkkkk",
+                      alignmentRight: false);
             },
           ),
         ),
