@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:sprintf/sprintf.dart';
 
-class Message extends StatelessWidget {
+class MessageWidget extends StatelessWidget {
   final String text;
+  final DateTime dateTime;
   final bool alignmentRight;
 
-  const Message(this.text, {Key? key, this.alignmentRight = true})
+  const MessageWidget(this.text, this.dateTime,
+      {Key? key, this.alignmentRight = true})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     double deviceWidth = MediaQuery.of(context).size.width;
     //double deviceHeight = MediaQuery.of(context).size.height;
+
     return Row(
       mainAxisAlignment: alignmentRight == true
           ? MainAxisAlignment.end
@@ -34,12 +38,12 @@ class Message extends StatelessWidget {
                 style: const TextStyle(color: Color(0xffe9edef)),
               ),
             ),
-            const Positioned(
+            Positioned(
               bottom: 10,
               right: 12,
               child: Text(
-                "44:44",
-                style: TextStyle(color: Color(0xff89b3ac), fontSize: 12),
+                sprintf("%02i:%02i", [dateTime.hour, dateTime.minute]),
+                style: const TextStyle(color: Color(0xff89b3ac), fontSize: 12),
               ),
             )
           ],
