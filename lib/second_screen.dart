@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
-import 'widget/messenger.dart';
+import 'model/chat.dart';
+import 'model/message.dart';
+import 'widget/chat_widget.dart';
 
 const secondScreen = "SECOND_SCREEN";
 
@@ -12,10 +14,26 @@ class SecondScreen extends StatefulWidget {
 }
 
 class _SecondScreenState extends State<SecondScreen> {
+  // idOwner = 1 -> Matheus
+  // idOwner = 2 -> Outra Pessoa
+  // idChat = 1 -> Chat do Matheus com Outra pessoa
+  Chat chat1 = Chat(1, 1, 2);
+
   @override
   void initState() {
     super.initState();
     developer.log('initState() was called!', name: secondScreen);
+    int idClient = 1;
+    chat1.addMessage(Message.withOutDate(1, idClient, chat1.id, "Hello World!"));
+    chat1.addMessage(Message.withOutDate(2, idClient, chat1.id, "Como você está?"));
+    chat1.addMessage(Message.withOutDate(3, 2, chat1.id, "Hello Matheus!"));
+    chat1.addMessage(Message.withOutDate(4, 2, chat1.id, "Hello Matheus!"));
+    chat1.addMessage(Message.withOutDate(5, 2, chat1.id, "Hello Matheus!"));
+    chat1.addMessage(Message.withOutDate(6, 2, chat1.id, "Hello Matheus!"));
+    chat1.addMessage(Message.withOutDate(7, idClient, chat1.id, "Repetiu muito"));
+    chat1.addMessage(Message.withOutDate(8, idClient, chat1.id, "kkkkk"));
+    chat1.addMessage(Message.withOutDate(9, idClient, chat1.id, "Bugou"));
+    chat1.addMessage(Message.withOutDate(10, idClient, chat1.id, "Testando..."));
   }
 
   @override
@@ -61,8 +79,8 @@ class _SecondScreenState extends State<SecondScreen> {
       appBar: AppBar(
         title: const Text('Second Screen'),
       ),
-      body: const Center(
-        child: Messenger(),
+      body: Center(
+        child: ChatWidget(chat1),
       ),
     );
   }

@@ -6,9 +6,7 @@ class MessageWidget extends StatelessWidget {
   final DateTime dateTime;
   final bool alignmentRight;
 
-  const MessageWidget(this.text, this.dateTime,
-      {Key? key, this.alignmentRight = true})
-      : super(key: key);
+  const MessageWidget(this.text, this.dateTime, {Key? key, this.alignmentRight = true}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,21 +14,16 @@ class MessageWidget extends StatelessWidget {
     //double deviceHeight = MediaQuery.of(context).size.height;
 
     return Row(
-      mainAxisAlignment: alignmentRight == true
-          ? MainAxisAlignment.end
-          : MainAxisAlignment.start,
+      mainAxisAlignment: alignmentRight == true ? MainAxisAlignment.end : MainAxisAlignment.start,
       children: [
         Stack(
           children: [
             Container(
               margin: const EdgeInsets.all(5.0),
               padding: const EdgeInsets.all(10.0),
-              constraints: BoxConstraints(
-                  maxWidth: deviceWidth * 0.75, minWidth: 80, minHeight: 50),
+              constraints: BoxConstraints(maxWidth: deviceWidth * 0.75, minWidth: 80, minHeight: 50),
               decoration: BoxDecoration(
-                color: alignmentRight == true
-                    ? const Color(0xff005c4b)
-                    : const Color(0xff202c33),
+                color: alignmentRight == true ? const Color(0xff005c4b) : const Color(0xff202c33),
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: Text(

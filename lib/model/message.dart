@@ -7,8 +7,7 @@ class Message {
 
   Message(this.id, this.idOwner, this.idChat, this.text, this.dateTime);
 
-  Message.withOutDate(this.id, this.idOwner, this.idChat, this.text)
-      : dateTime = DateTime.now();
+  Message.withOutDate(this.id, this.idOwner, this.idChat, this.text) : dateTime = DateTime.now();
 
   @override
   String toString() {
