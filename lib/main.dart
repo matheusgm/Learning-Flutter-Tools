@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:learning_flutter_tools/second_screen.dart';
+import 'package:learning_flutter_tools/messenger_screen.dart';
 import './home_page.dart';
 
 void main() {
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const MyHomePage(title: 'Home Page Title'),
-        '/second': (context) => const SecondScreen()
+        '/messenger': (context) => const MessengerScreen()
       },
     );
   }

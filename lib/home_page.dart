@@ -15,7 +15,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   void _openMessenger() {
     developer.log('_openMessenger() was called!', name: homePage);
-    Navigator.pushNamed(context, '/second');
+    Navigator.pushNamed(context, '/messenger');
   }
 
   @override
