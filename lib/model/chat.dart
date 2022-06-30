@@ -2,11 +2,9 @@ import 'package:learning_flutter_tools/model/message.dart';
 
 class Chat {
   int id;
-  int idOwner;
-  int idReceiver;
   List<Message> messages;
 
-  Chat(this.id, this.idOwner, this.idReceiver) : messages = [];
+  Chat(this.id) : messages = [];
 
   void addMessage(Message message) {
     messages.add(message);
@@ -14,6 +12,6 @@ class Chat {
 
   @override
   String toString() {
-    return "Chat id:$id | Owner id:$idOwner | Receiver id: $idReceiver | Size of Messages: ${messages.length}";
+    return "Chat id: $id | Size of Messages: ${messages.length}";
   }
 }

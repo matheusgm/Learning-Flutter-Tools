@@ -22,9 +22,6 @@ class _ChatWidget extends State<ChatWidget> {
 
   @override
   void initState() {
-    idClient = widget.chat.idOwner;
-    listOfMessages = widget.chat.messages;
-
     super.initState();
   }
 
@@ -36,6 +33,8 @@ class _ChatWidget extends State<ChatWidget> {
 
   @override
   Widget build(BuildContext context) {
+    idClient = 1;
+    listOfMessages = widget.chat.messages;
     return Column(
       children: [
         chatListView(),

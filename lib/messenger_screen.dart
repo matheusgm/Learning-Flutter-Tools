@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:learning_flutter_tools/model/group_chat.dart';
+import 'package:learning_flutter_tools/model/personal_chat.dart';
 import 'dart:developer' as developer;
 import 'model/chat.dart';
 import 'model/message.dart';
@@ -14,16 +16,21 @@ class MessengerScreen extends StatefulWidget {
 }
 
 class _MessengerScreen extends State<MessengerScreen> {
-  // idOwner = 1 -> Matheus
-  // idOwner = 2 -> Outra Pessoa
-  // idChat = 1 -> Chat do Matheus com Outra pessoa
-  Chat chat1 = Chat(1, 1, 2);
+  GroupChat chat1 = GroupChat.new("Group 1", 1, 1);
+  PersonalChat chat2 = PersonalChat.new(2, 2);
+  GroupChat chat3 = GroupChat.new("Group 2", 3, 2);
+
+  List<Chat> chatsList = [];
+  int indexChatOn = -1;
+  int idClient = -1;
 
   @override
   void initState() {
     super.initState();
     developer.log('initState() was called!', name: messengerScreen);
-    int idClient = 1;
+    idClient = 1;
+    chat1.addMember(2);
+
     chat1.addMessage(Message.withOutDate(1, idClient, chat1.id, "Hello World!"));
     chat1.addMessage(Message.withOutDate(2, idClient, chat1.id, "Como você está?"));
     chat1.addMessage(Message.withOutDate(3, 2, chat1.id, "Hello Matheus!"));
@@ -34,6 +41,15 @@ class _MessengerScreen extends State<MessengerScreen> {
     chat1.addMessage(Message.withOutDate(8, idClient, chat1.id, "kkkkk"));
     chat1.addMessage(Message.withOutDate(9, idClient, chat1.id, "Bugou"));
     chat1.addMessage(Message.withOutDate(10, idClient, chat1.id, "Testando..."));
+
+    chat2.addMessage(Message.withOutDate(1, idClient, chat2.id, "Hello World 2.0!"));
+    chat2.addMessage(Message.withOutDate(2, idClient, chat2.id, "Como você está?"));
+    chat2.addMessage(Message.withOutDate(3, 3, chat2.id, "Math kkkkk!"));
+    chat2.addMessage(Message.withOutDate(4, 3, chat2.id, "sauhsahusa!"));
+
+    chatsList.add(chat1);
+    chatsList.add(chat2);
+    chatsList.add(chat3);
   }
 
   @override
@@ -74,7 +90,8 @@ class _MessengerScreen extends State<MessengerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    developer.log('buildr() was called!', name: messengerScreen);
+    developer.log('buildr() was called! | indexChats: $indexChatOn', name: messengerScreen);
+    developer.log("size: ${chatsList.length}", name: messengerScreen);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Messenger'),
@@ -85,45 +102,30 @@ class _MessengerScreen extends State<MessengerScreen> {
             }),
       ),
       body: Center(
-        child: ChatWidget(chat1),
+        child: indexChatOn == -1 ? const Text("SEM CHAT") : ChatWidget(chatsList[indexChatOn]),
       ),
       endDrawer: Drawer(
         child: Column(
           children: [
-            Expanded(
-              child: ListView(
-                children: [
-                  const DrawerHeader(
-                    child: ListTile(
-                      title: Text('Messages'),
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                    ),
-                  ),
-                  const ListTile(
-                    leading: Icon(Icons.message),
-                    title: Text('Messages'),
-                    trailing: Icon(Icons.delete),
-                  ),
-                  myListTile(
-                      leading: const Icon(Icons.person),
-                      title: "Group 1",
-                      trailing1: const Icon(Icons.edit),
-                      trailing2: const Icon(Icons.delete),
-                      onTap1: () {
-                        developer.log("Edit button clicked!", name: messengerScreen);
-                      },
-                      onTap2: () {
-                        developer.log("Delete button clicked!", name: messengerScreen);
-                      }),
-                  const ListTile(
-                    leading: Icon(Icons.account_circle),
-                    title: Text('Profile'),
-                    tileColor: Color.fromRGBO(255, 0, 0, 0.7),
-                  ),
-                ],
+            const DrawerHeader(
+              child: ListTile(
+                title: Text('Messages'),
               ),
+              decoration: BoxDecoration(color: Colors.blueGrey),
+            ),
+            Expanded(
+              child: ListView.builder(
+                  // controller: listViewScrollController,
+                  padding: EdgeInsets.zero,
+                  itemCount: chatsList.length,
+                  itemBuilder: (context, index) {
+                    Chat obj = chatsList[index];
+                    return obj is PersonalChat
+                        ? personListTile(index: index, personName: "Person ${obj.idReceveir}")
+                        : obj is GroupChat
+                            ? groupListTile(index: index, groupName: obj.title)
+                            : Container();
+                  }),
             ),
             Align(
               alignment: FractionalOffset.bottomCenter,
@@ -136,9 +138,11 @@ class _MessengerScreen extends State<MessengerScreen> {
                     color: Color.fromARGB(255, 208, 208, 208),
                   ),
                   myListTile(
-                    leading: const Icon(Icons.add),
-                    title: 'New Chat',
-                  ),
+                      leading: const Icon(Icons.add),
+                      title: 'New Chat',
+                      onTapTile: () {
+                        developer.log("Create a new chat!", name: messengerScreen);
+                      }),
                 ],
               ),
             )
@@ -148,11 +152,52 @@ class _MessengerScreen extends State<MessengerScreen> {
     );
   }
 
+  Widget groupListTile({int? index, String? groupName}) {
+    GroupChat gc = chatsList[index!] as GroupChat;
+    return myListTile(
+      leading: const Icon(Icons.group),
+      title: groupName,
+      trailing1: idClient == gc.idAdmin ? const Icon(Icons.edit) : null,
+      trailing2: const Icon(Icons.delete),
+      onTap1: () {
+        developer.log("Editing groupe <${gc.title}>", name: messengerScreen);
+      },
+      onTap2: () {
+        developer.log("Deleting groupe <${gc.title}>", name: messengerScreen);
+      },
+      onTapTile: () {
+        setState(() {
+          indexChatOn = index;
+        });
+        Navigator.pop(context);
+      },
+    );
+  }
+
+  Widget personListTile({int? index, String? personName}) {
+    PersonalChat pc = chatsList[index!] as PersonalChat;
+    return myListTile(
+      leading: const Icon(Icons.person),
+      title: personName,
+      trailing2: const Icon(Icons.delete),
+      onTap2: () {
+        developer.log("Editing person <${pc.idReceveir}>", name: messengerScreen);
+      },
+      onTapTile: () {
+        setState(() {
+          indexChatOn = index;
+        });
+        Navigator.pop(context);
+      },
+    );
+  }
+
   Widget myListTile(
       {Widget? leading,
       String? title,
       Widget? trailing1,
       Widget? trailing2,
+      void Function()? onTapTile,
       void Function()? onTap1,
       void Function()? onTap2}) {
     return Container(
@@ -170,16 +215,19 @@ class _MessengerScreen extends State<MessengerScreen> {
                 )
               : Container(),
           Expanded(
-            child: Container(
-              // color: Colors.amber,
-              margin: const EdgeInsets.only(left: 25, right: 5),
-              child: Text(
-                title ?? "",
-                style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.black),
+            child: GestureDetector(
+              onTap: onTapTile,
+              child: Container(
+                // color: Colors.amber,
+                margin: const EdgeInsets.only(left: 25, right: 5),
+                child: Text(
+                  title ?? "",
+                  style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.black),
+                ),
               ),
             ),
           ),
-          trailing1 != null
+          trailing1 != null && trailing1 != Container()
               ? IconButton(
                   padding: const EdgeInsets.all(6),
                   icon: trailing1,
