@@ -4,7 +4,7 @@ import 'model/chat.dart';
 import 'model/message.dart';
 import 'widget/chat_widget.dart';
 
-const secondScreen = "MESSENGER_SCREEN";
+const messengerScreen = "MESSENGER_SCREEN";
 
 class MessengerScreen extends StatefulWidget {
   const MessengerScreen({Key? key}) : super(key: key);
@@ -22,7 +22,7 @@ class _MessengerScreen extends State<MessengerScreen> {
   @override
   void initState() {
     super.initState();
-    developer.log('initState() was called!', name: secondScreen);
+    developer.log('initState() was called!', name: messengerScreen);
     int idClient = 1;
     chat1.addMessage(Message.withOutDate(1, idClient, chat1.id, "Hello World!"));
     chat1.addMessage(Message.withOutDate(2, idClient, chat1.id, "Como você está?"));
@@ -39,42 +39,42 @@ class _MessengerScreen extends State<MessengerScreen> {
   @override
   void dispose() {
     super.dispose();
-    developer.log('dispose() was called!', name: secondScreen);
+    developer.log('dispose() was called!', name: messengerScreen);
   }
 
   @override
   void activate() {
     super.activate();
-    developer.log('activate() was called!', name: secondScreen);
+    developer.log('activate() was called!', name: messengerScreen);
   }
 
   @override
   void deactivate() {
     super.deactivate();
-    developer.log('deactivate() was called!', name: secondScreen);
+    developer.log('deactivate() was called!', name: messengerScreen);
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    developer.log('didChangeDependencies() was called!', name: secondScreen);
+    developer.log('didChangeDependencies() was called!', name: messengerScreen);
   }
 
   @override
   void didUpdateWidget(covariant MessengerScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
-    developer.log('didUpdateWidget() was called!', name: secondScreen);
+    developer.log('didUpdateWidget() was called!', name: messengerScreen);
   }
 
   @override
   void reassemble() {
     super.reassemble();
-    developer.log('reassemble() was called!', name: secondScreen);
+    developer.log('reassemble() was called!', name: messengerScreen);
   }
 
   @override
   Widget build(BuildContext context) {
-    developer.log('buildr() was called!', name: secondScreen);
+    developer.log('buildr() was called!', name: messengerScreen);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Messenger'),
@@ -107,10 +107,16 @@ class _MessengerScreen extends State<MessengerScreen> {
                     trailing: Icon(Icons.delete),
                   ),
                   myListTile(
-                    title: "Group 1",
-                    trailing1: const Icon(Icons.edit),
-                    trailing2: const Icon(Icons.delete),
-                  ),
+                      leading: const Icon(Icons.person),
+                      title: "Group 1",
+                      trailing1: const Icon(Icons.edit),
+                      trailing2: const Icon(Icons.delete),
+                      onTap1: () {
+                        developer.log("Edit button clicked!", name: messengerScreen);
+                      },
+                      onTap2: () {
+                        developer.log("Delete button clicked!", name: messengerScreen);
+                      }),
                   const ListTile(
                     leading: Icon(Icons.account_circle),
                     title: Text('Profile'),
@@ -121,19 +127,17 @@ class _MessengerScreen extends State<MessengerScreen> {
             ),
             Align(
               alignment: FractionalOffset.bottomCenter,
-              // This container holds all the children that will be aligned
-              // on the bottom and should not scroll with the above ListView
               child: Column(
-                children: const <Widget>[
-                  Divider(
+                children: <Widget>[
+                  const Divider(
                     thickness: 1,
                     indent: 10,
                     endIndent: 10,
                     color: Color.fromARGB(255, 208, 208, 208),
                   ),
-                  ListTile(
-                    leading: Icon(Icons.add),
-                    title: Text('New Chat'),
+                  myListTile(
+                    leading: const Icon(Icons.add),
+                    title: 'New Chat',
                   ),
                 ],
               ),
@@ -144,23 +148,31 @@ class _MessengerScreen extends State<MessengerScreen> {
     );
   }
 
-  Widget myListTile({String? title, Widget? trailing1, Widget? trailing2}) {
+  Widget myListTile(
+      {Widget? leading,
+      String? title,
+      Widget? trailing1,
+      Widget? trailing2,
+      void Function()? onTap1,
+      void Function()? onTap2}) {
     return Container(
       padding: const EdgeInsets.all(10),
-      //color: const Color.fromRGBO(0, 255, 0, 0.7),
+      //color: Colors.blueAccent,
       child: Row(
         children: [
-          const Padding(
-            padding: EdgeInsets.all(6),
-            child: IconTheme(
-              data: IconThemeData(color: Colors.grey),
-              child: Icon(Icons.message),
-            ),
-          ),
+          leading != null
+              ? Padding(
+                  padding: const EdgeInsets.all(6),
+                  child: IconTheme(
+                    data: const IconThemeData(color: Colors.grey),
+                    child: leading,
+                  ),
+                )
+              : Container(),
           Expanded(
             child: Container(
-              margin: const EdgeInsets.only(left: 25),
-              //color: const Color.fromRGBO(255, 0, 255, 1),
+              // color: Colors.amber,
+              margin: const EdgeInsets.only(left: 25, right: 5),
               child: Text(
                 title ?? "",
                 style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.black),
@@ -168,21 +180,23 @@ class _MessengerScreen extends State<MessengerScreen> {
             ),
           ),
           trailing1 != null
-              ? Padding(
-                  padding: const EdgeInsets.only(left: 6, right: 6),
-                  child: IconTheme(
-                    data: const IconThemeData(color: Colors.grey),
-                    child: trailing1,
-                  ),
+              ? IconButton(
+                  padding: const EdgeInsets.all(6),
+                  icon: trailing1,
+                  splashRadius: 20,
+                  constraints: const BoxConstraints(),
+                  onPressed: onTap1,
+                  color: Colors.grey,
                 )
               : Container(),
           trailing2 != null
-              ? Padding(
-                  padding: const EdgeInsets.only(right: 6, left: 6),
-                  child: IconTheme(
-                    data: const IconThemeData(color: Colors.grey),
-                    child: trailing2,
-                  ),
+              ? IconButton(
+                  padding: const EdgeInsets.all(6),
+                  constraints: const BoxConstraints(),
+                  icon: trailing2,
+                  splashRadius: 20,
+                  onPressed: onTap2,
+                  color: Colors.grey,
                 )
               : Container(),
         ],
