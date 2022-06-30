@@ -8,7 +8,8 @@ const messengerDebug = "MESSENGER";
 
 class ChatWidget extends StatefulWidget {
   final Chat chat;
-  const ChatWidget(this.chat, {Key? key}) : super(key: key);
+  final int idClient;
+  const ChatWidget(this.idClient, this.chat, {Key? key}) : super(key: key);
 
   @override
   State<ChatWidget> createState() => _ChatWidget();
@@ -33,7 +34,7 @@ class _ChatWidget extends State<ChatWidget> {
 
   @override
   Widget build(BuildContext context) {
-    idClient = 1;
+    idClient = widget.idClient;
     listOfMessages = widget.chat.messages;
     return Column(
       children: [

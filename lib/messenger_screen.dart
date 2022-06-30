@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:learning_flutter_tools/model/group_chat.dart';
 import 'package:learning_flutter_tools/model/personal_chat.dart';
+import 'package:learning_flutter_tools/widget/my_list_tile_widget.dart';
 import 'dart:developer' as developer;
 import 'model/chat.dart';
 import 'model/message.dart';
@@ -90,8 +91,7 @@ class _MessengerScreen extends State<MessengerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    developer.log('buildr() was called! | indexChats: $indexChatOn', name: messengerScreen);
-    developer.log("size: ${chatsList.length}", name: messengerScreen);
+    developer.log('buildr() was called! ', name: messengerScreen);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Messenger'),
@@ -102,59 +102,74 @@ class _MessengerScreen extends State<MessengerScreen> {
             }),
       ),
       body: Center(
-        child: indexChatOn == -1 ? const Text("SEM CHAT") : ChatWidget(chatsList[indexChatOn]),
+        child: indexChatOn == -1 ? const Text("SEM CHAT") : ChatWidget(idClient, chatsList[indexChatOn]),
       ),
       endDrawer: Drawer(
         child: Column(
           children: [
-            const DrawerHeader(
-              child: ListTile(
-                title: Text('Messages'),
-              ),
-              decoration: BoxDecoration(color: Colors.blueGrey),
-            ),
-            Expanded(
-              child: ListView.builder(
-                  // controller: listViewScrollController,
-                  padding: EdgeInsets.zero,
-                  itemCount: chatsList.length,
-                  itemBuilder: (context, index) {
-                    Chat obj = chatsList[index];
-                    return obj is PersonalChat
-                        ? personListTile(index: index, personName: "Person ${obj.idReceveir}")
-                        : obj is GroupChat
-                            ? groupListTile(index: index, groupName: obj.title)
-                            : Container();
-                  }),
-            ),
-            Align(
-              alignment: FractionalOffset.bottomCenter,
-              child: Column(
-                children: <Widget>[
-                  const Divider(
-                    thickness: 1,
-                    indent: 10,
-                    endIndent: 10,
-                    color: Color.fromARGB(255, 208, 208, 208),
-                  ),
-                  myListTile(
-                      leading: const Icon(Icons.add),
-                      title: 'New Chat',
-                      onTapTile: () {
-                        developer.log("Create a new chat!", name: messengerScreen);
-                      }),
-                ],
-              ),
-            )
+            myDrawerHeader(),
+            myDrawerList(),
+            myDrawerFooter(),
           ],
         ),
       ),
     );
   }
 
+  Widget myDrawerHeader() {
+    return const DrawerHeader(
+      child: ListTile(
+        title: Text('Messages'),
+      ),
+      decoration: BoxDecoration(color: Colors.blueGrey),
+    );
+  }
+
+  Widget myDrawerList() {
+    return Expanded(
+      child: ListView.builder(
+          // controller: listViewScrollController,
+          padding: EdgeInsets.zero,
+          itemCount: chatsList.length,
+          itemBuilder: (context, index) {
+            Chat obj = chatsList[index];
+            return obj is PersonalChat
+                ? personListTile(index: index, personName: "Person ${obj.idReceveir}")
+                : obj is GroupChat
+                    ? groupListTile(index: index, groupName: obj.title)
+                    : Container();
+          }),
+    );
+  }
+
+  Widget myDrawerFooter() {
+    return Align(
+      alignment: FractionalOffset.bottomCenter,
+      child: Column(
+        children: <Widget>[
+          const Divider(
+            thickness: 1,
+            indent: 10,
+            endIndent: 10,
+            color: Color.fromARGB(255, 208, 208, 208),
+          ),
+          GestureDetector(
+            onTap: () {
+              developer.log("Creating a new group", name: messengerScreen);
+            },
+            child: const MyListTile(
+              leading: Icon(Icons.add),
+              title: 'New Chat',
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget groupListTile({int? index, String? groupName}) {
     GroupChat gc = chatsList[index!] as GroupChat;
-    return myListTile(
+    return MyListTile(
       leading: const Icon(Icons.group),
       title: groupName,
       trailing1: idClient == gc.idAdmin ? const Icon(Icons.edit) : null,
@@ -176,7 +191,7 @@ class _MessengerScreen extends State<MessengerScreen> {
 
   Widget personListTile({int? index, String? personName}) {
     PersonalChat pc = chatsList[index!] as PersonalChat;
-    return myListTile(
+    return MyListTile(
       leading: const Icon(Icons.person),
       title: personName,
       trailing2: const Icon(Icons.delete),
@@ -189,66 +204,6 @@ class _MessengerScreen extends State<MessengerScreen> {
         });
         Navigator.pop(context);
       },
-    );
-  }
-
-  Widget myListTile(
-      {Widget? leading,
-      String? title,
-      Widget? trailing1,
-      Widget? trailing2,
-      void Function()? onTapTile,
-      void Function()? onTap1,
-      void Function()? onTap2}) {
-    return Container(
-      padding: const EdgeInsets.all(10),
-      //color: Colors.blueAccent,
-      child: Row(
-        children: [
-          leading != null
-              ? Padding(
-                  padding: const EdgeInsets.all(6),
-                  child: IconTheme(
-                    data: const IconThemeData(color: Colors.grey),
-                    child: leading,
-                  ),
-                )
-              : Container(),
-          Expanded(
-            child: GestureDetector(
-              onTap: onTapTile,
-              child: Container(
-                // color: Colors.amber,
-                margin: const EdgeInsets.only(left: 25, right: 5),
-                child: Text(
-                  title ?? "",
-                  style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.black),
-                ),
-              ),
-            ),
-          ),
-          trailing1 != null && trailing1 != Container()
-              ? IconButton(
-                  padding: const EdgeInsets.all(6),
-                  icon: trailing1,
-                  splashRadius: 20,
-                  constraints: const BoxConstraints(),
-                  onPressed: onTap1,
-                  color: Colors.grey,
-                )
-              : Container(),
-          trailing2 != null
-              ? IconButton(
-                  padding: const EdgeInsets.all(6),
-                  constraints: const BoxConstraints(),
-                  icon: trailing2,
-                  splashRadius: 20,
-                  onPressed: onTap2,
-                  color: Colors.grey,
-                )
-              : Container(),
-        ],
-      ),
     );
   }
 }
