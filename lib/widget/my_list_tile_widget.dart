@@ -19,7 +19,7 @@ class MyListTile extends StatelessWidget {
       onTap: onTapTile,
       child: Container(
         padding: const EdgeInsets.all(10),
-        // color: Colors.blueAccent,
+        color: Colors.transparent,
         child: Row(
           children: [
             leading != null

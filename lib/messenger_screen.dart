@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:learning_flutter_tools/model/group_chat.dart';
 import 'package:learning_flutter_tools/model/personal_chat.dart';
+import 'package:learning_flutter_tools/widget/modal_widget.dart';
 import 'package:learning_flutter_tools/widget/my_list_tile_widget.dart';
 import 'dart:developer' as developer;
 import 'model/chat.dart';
@@ -156,6 +157,20 @@ class _MessengerScreen extends State<MessengerScreen> {
           GestureDetector(
             onTap: () {
               developer.log("Creating a new group", name: messengerScreen);
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return Modal(
+                    headerTitle: "New Chat",
+                    body: Column(
+                      children: const [
+                        Text("Hello body"),
+                      ],
+                    ),
+                    modalButtons: ModalButtons.cancelAndAccept,
+                  );
+                },
+              );
             },
             child: const MyListTile(
               leading: Icon(Icons.add),
