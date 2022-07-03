@@ -26,6 +26,8 @@ class _MessengerScreen extends State<MessengerScreen> {
   int indexChatOn = -1;
   int idClient = -1;
 
+  int? radioValue = -1;
+
   @override
   void initState() {
     super.initState();
@@ -160,63 +162,10 @@ class _MessengerScreen extends State<MessengerScreen> {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
-                  int? val = -1;
                   return StatefulBuilder(
                     builder: (context, setState) => Modal(
                       headerTitle: "New Chat",
-                      body: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Row(
-                                children: [
-                                  Radio(
-                                    value: 1,
-                                    groupValue: val,
-                                    onChanged: (int? value) {
-                                      setState(() {
-                                        val = value;
-                                      });
-                                    },
-                                    visualDensity: const VisualDensity(
-                                      horizontal: VisualDensity.minimumDensity,
-                                      vertical: VisualDensity.minimumDensity,
-                                    ),
-                                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                  ),
-                                  const Text("Personal")
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Radio(
-                                    value: 2,
-                                    groupValue: val,
-                                    onChanged: (int? value) {
-                                      setState(() {
-                                        val = value;
-                                      });
-                                    },
-                                    visualDensity: const VisualDensity(
-                                      horizontal: VisualDensity.minimumDensity,
-                                      vertical: VisualDensity.minimumDensity,
-                                    ),
-                                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                  ),
-                                  const Text("Group")
-                                ],
-                              ),
-                            ],
-                          ),
-                          val == 1
-                              ? const Text("Personal Body")
-                              : val == 2
-                                  ? const Text("Group Body")
-                                  : const Text("Hello body"),
-                        ],
-                      ),
+                      body: createNewChatModalBody(setState),
                       modalButtons: ModalButtons.cancelAndCreate,
                       footerButtonTap: [
                         () {
@@ -239,6 +188,62 @@ class _MessengerScreen extends State<MessengerScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget createNewChatModalBody(StateSetter setState) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Row(
+              children: [
+                Radio(
+                  value: 1,
+                  groupValue: radioValue,
+                  onChanged: (int? value) {
+                    setState(() {
+                      radioValue = value;
+                    });
+                  },
+                  visualDensity: const VisualDensity(
+                    horizontal: VisualDensity.minimumDensity,
+                    vertical: VisualDensity.minimumDensity,
+                  ),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                const Text("Personal")
+              ],
+            ),
+            Row(
+              children: [
+                Radio(
+                  value: 2,
+                  groupValue: radioValue,
+                  onChanged: (int? value) {
+                    setState(() {
+                      radioValue = value;
+                    });
+                  },
+                  visualDensity: const VisualDensity(
+                    horizontal: VisualDensity.minimumDensity,
+                    vertical: VisualDensity.minimumDensity,
+                  ),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                const Text("Group")
+              ],
+            ),
+          ],
+        ),
+        radioValue == 1
+            ? const Text("Personal Body")
+            : radioValue == 2
+                ? const Text("Group Body")
+                : const Text("Hello body"),
+      ],
     );
   }
 
