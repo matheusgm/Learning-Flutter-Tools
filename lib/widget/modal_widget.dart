@@ -81,50 +81,70 @@ class _Modal extends State<Modal> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              if (widget.modalButtons == ModalButtons.noAndYes) ...[
-                ElevatedButton(
-                  onPressed: widget.footerButtonTap.isNotEmpty ? widget.footerButtonTap[0] : () {},
-                  child: const Text("No"),
-                ),
-                ElevatedButton(
-                  onPressed: widget.footerButtonTap.isNotEmpty && widget.footerButtonTap.length > 1
-                      ? widget.footerButtonTap[1]
-                      : () {},
-                  child: const Text("Yes"),
-                )
-              ] else if (widget.modalButtons == ModalButtons.cancelAndCreate) ...[
-                ElevatedButton(
-                  onPressed: widget.footerButtonTap.isNotEmpty ? widget.footerButtonTap[0] : () {},
-                  child: const Text("Cancel"),
-                ),
-                ElevatedButton(
-                  onPressed: widget.footerButtonTap.isNotEmpty && widget.footerButtonTap.length > 1
-                      ? widget.footerButtonTap[1]
-                      : () {},
-                  child: const Text("Create"),
-                )
-              ] else if (widget.modalButtons == ModalButtons.cancelAndAccept) ...[
-                ElevatedButton(
-                  onPressed: widget.footerButtonTap.isNotEmpty ? widget.footerButtonTap[0] : () {},
-                  child: const Text("Cancel"),
-                ),
-                ElevatedButton(
-                  onPressed: widget.footerButtonTap.isNotEmpty && widget.footerButtonTap.length > 1
-                      ? widget.footerButtonTap[1]
-                      : () {},
-                  child: const Text("Accept"),
-                )
-              ] else ...[
-                ElevatedButton(
-                  onPressed: widget.footerButtonTap.isNotEmpty ? widget.footerButtonTap[0] : () {},
-                  child: const Text("Ok"),
-                )
-              ]
+              if (widget.modalButtons == ModalButtons.noAndYes)
+                ...noAndYesButtons()
+              else if (widget.modalButtons == ModalButtons.cancelAndCreate)
+                ...cancelAndCreateButtons()
+              else if (widget.modalButtons == ModalButtons.cancelAndAccept)
+                ...cancelAndAcceptButtons()
+              else
+                ...okButtons()
             ],
           )
         ],
       ),
     );
+  }
+
+  List<Widget> noAndYesButtons() {
+    return [
+      ElevatedButton(
+        onPressed: widget.footerButtonTap.isNotEmpty ? widget.footerButtonTap[0] : () {},
+        child: const Text("No"),
+      ),
+      ElevatedButton(
+        onPressed:
+            widget.footerButtonTap.isNotEmpty && widget.footerButtonTap.length > 1 ? widget.footerButtonTap[1] : () {},
+        child: const Text("Yes"),
+      )
+    ];
+  }
+
+  List<Widget> cancelAndAcceptButtons() {
+    return [
+      ElevatedButton(
+        onPressed: widget.footerButtonTap.isNotEmpty ? widget.footerButtonTap[0] : () {},
+        child: const Text("Cancel"),
+      ),
+      ElevatedButton(
+        onPressed:
+            widget.footerButtonTap.isNotEmpty && widget.footerButtonTap.length > 1 ? widget.footerButtonTap[1] : () {},
+        child: const Text("Accept"),
+      )
+    ];
+  }
+
+  List<Widget> cancelAndCreateButtons() {
+    return [
+      ElevatedButton(
+        onPressed: widget.footerButtonTap.isNotEmpty ? widget.footerButtonTap[0] : () {},
+        child: const Text("Cancel"),
+      ),
+      ElevatedButton(
+        onPressed:
+            widget.footerButtonTap.isNotEmpty && widget.footerButtonTap.length > 1 ? widget.footerButtonTap[1] : () {},
+        child: const Text("Create"),
+      )
+    ];
+  }
+
+  List<Widget> okButtons() {
+    return [
+      ElevatedButton(
+        onPressed: widget.footerButtonTap.isNotEmpty ? widget.footerButtonTap[0] : () {},
+        child: const Text("Ok"),
+      )
+    ];
   }
 }
 
