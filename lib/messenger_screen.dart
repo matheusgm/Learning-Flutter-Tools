@@ -160,14 +160,74 @@ class _MessengerScreen extends State<MessengerScreen> {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
-                  return Modal(
-                    headerTitle: "New Chat",
-                    body: Column(
-                      children: const [
-                        Text("Hello body"),
+                  int? val = -1;
+                  return StatefulBuilder(
+                    builder: (context, setState) => Modal(
+                      headerTitle: "New Chat",
+                      body: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Row(
+                                children: [
+                                  Radio(
+                                    value: 1,
+                                    groupValue: val,
+                                    onChanged: (int? value) {
+                                      setState(() {
+                                        val = value;
+                                      });
+                                    },
+                                    visualDensity: const VisualDensity(
+                                      horizontal: VisualDensity.minimumDensity,
+                                      vertical: VisualDensity.minimumDensity,
+                                    ),
+                                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  ),
+                                  const Text("Personal")
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Radio(
+                                    value: 2,
+                                    groupValue: val,
+                                    onChanged: (int? value) {
+                                      setState(() {
+                                        val = value;
+                                      });
+                                    },
+                                    visualDensity: const VisualDensity(
+                                      horizontal: VisualDensity.minimumDensity,
+                                      vertical: VisualDensity.minimumDensity,
+                                    ),
+                                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  ),
+                                  const Text("Group")
+                                ],
+                              ),
+                            ],
+                          ),
+                          val == 1
+                              ? const Text("Personal Body")
+                              : val == 2
+                                  ? const Text("Group Body")
+                                  : const Text("Hello body"),
+                        ],
+                      ),
+                      modalButtons: ModalButtons.cancelAndCreate,
+                      footerButtonTap: [
+                        () {
+                          developer.log("Cancel Button of New Chat", name: messengerScreen);
+                          Navigator.pop(context);
+                        },
+                        () {
+                          developer.log("Create Button of New Chat", name: messengerScreen);
+                        },
                       ],
                     ),
-                    modalButtons: ModalButtons.cancelAndAccept,
                   );
                 },
               );
@@ -191,6 +251,15 @@ class _MessengerScreen extends State<MessengerScreen> {
       trailing2: const Icon(Icons.delete),
       onTap1: () {
         developer.log("Editing groupe <${gc.title}>", name: messengerScreen);
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return Modal(
+              headerTitle: gc.title,
+              modalButtons: ModalButtons.cancelAndAccept,
+            );
+          },
+        );
       },
       onTap2: () {
         developer.log("Deleting groupe <${gc.title}>", name: messengerScreen);
@@ -211,7 +280,24 @@ class _MessengerScreen extends State<MessengerScreen> {
       title: personName,
       trailing2: const Icon(Icons.delete),
       onTap2: () {
-        developer.log("Editing person <${pc.idReceveir}>", name: messengerScreen);
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return Modal(
+              headerTitle: "Delete",
+              body: Text("Are you sure you want to delete ${pc.idReceveir}?"),
+              modalButtons: ModalButtons.noAndYes,
+              footerButtonTap: [
+                () {
+                  Navigator.pop(context);
+                },
+                () {
+                  developer.log("Deleting person <${pc.idReceveir}>", name: messengerScreen);
+                }
+              ],
+            );
+          },
+        );
       },
       onTapTile: () {
         setState(() {

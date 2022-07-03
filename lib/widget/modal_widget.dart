@@ -1,19 +1,31 @@
 import 'package:flutter/material.dart';
+import 'dart:developer' as developer;
 
-class Modal extends StatelessWidget {
+const modalScreen = "MODAL_SCREEN";
+
+class Modal extends StatefulWidget {
   final String? headerTitle;
   final Widget? body;
   final ModalButtons modalButtons;
-  const Modal({this.body, this.headerTitle, this.modalButtons = ModalButtons.ok, Key? key}) : super(key: key);
+  final List<void Function()?> footerButtonTap;
+  const Modal(
+      {this.body, this.headerTitle, this.modalButtons = ModalButtons.ok, this.footerButtonTap = const [], Key? key})
+      : super(key: key);
 
   @override
+  State<Modal> createState() => _Modal();
+}
+
+class _Modal extends State<Modal> {
+  @override
   Widget build(BuildContext context) {
+    developer.log('buildr() was called! ', name: modalScreen);
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
       ),
       child: Container(
-        constraints: const BoxConstraints(maxHeight: 300),
+        constraints: const BoxConstraints(maxHeight: 500),
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Column(
@@ -35,7 +47,7 @@ class Modal extends StatelessWidget {
       child: Column(
         children: <Widget>[
           Text(
-            headerTitle ?? "Welcome",
+            widget.headerTitle ?? "Welcome",
             style: const TextStyle(
               fontSize: 20,
             ),
@@ -52,9 +64,7 @@ class Modal extends StatelessWidget {
   }
 
   Widget modalBody() {
-    return Expanded(
-      child: body ?? const Text("Body is null"),
-    );
+    return widget.body ?? const Text("Body is null");
   }
 
   Widget modalFooter() {
@@ -71,27 +81,42 @@ class Modal extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              if (modalButtons == ModalButtons.noAndYes) ...[
+              if (widget.modalButtons == ModalButtons.noAndYes) ...[
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: widget.footerButtonTap.isNotEmpty ? widget.footerButtonTap[0] : () {},
                   child: const Text("No"),
                 ),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: widget.footerButtonTap.isNotEmpty && widget.footerButtonTap.length > 1
+                      ? widget.footerButtonTap[1]
+                      : () {},
                   child: const Text("Yes"),
                 )
-              ] else if (modalButtons == ModalButtons.cancelAndAccept) ...[
+              ] else if (widget.modalButtons == ModalButtons.cancelAndCreate) ...[
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: widget.footerButtonTap.isNotEmpty ? widget.footerButtonTap[0] : () {},
                   child: const Text("Cancel"),
                 ),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: widget.footerButtonTap.isNotEmpty && widget.footerButtonTap.length > 1
+                      ? widget.footerButtonTap[1]
+                      : () {},
+                  child: const Text("Create"),
+                )
+              ] else if (widget.modalButtons == ModalButtons.cancelAndAccept) ...[
+                ElevatedButton(
+                  onPressed: widget.footerButtonTap.isNotEmpty ? widget.footerButtonTap[0] : () {},
+                  child: const Text("Cancel"),
+                ),
+                ElevatedButton(
+                  onPressed: widget.footerButtonTap.isNotEmpty && widget.footerButtonTap.length > 1
+                      ? widget.footerButtonTap[1]
+                      : () {},
                   child: const Text("Accept"),
                 )
               ] else ...[
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: widget.footerButtonTap.isNotEmpty ? widget.footerButtonTap[0] : () {},
                   child: const Text("Ok"),
                 )
               ]
@@ -103,4 +128,4 @@ class Modal extends StatelessWidget {
   }
 }
 
-enum ModalButtons { ok, noAndYes, cancelAndAccept }
+enum ModalButtons { ok, noAndYes, cancelAndAccept, cancelAndCreate }
