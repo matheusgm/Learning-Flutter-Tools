@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:learning_flutter_tools/model/group_chat.dart';
 import 'package:learning_flutter_tools/model/personal_chat.dart';
+import 'package:learning_flutter_tools/widget/group_list_tile.dart';
 import 'package:learning_flutter_tools/widget/modal_widget.dart';
+import 'package:learning_flutter_tools/widget/my_drawer_widget.dart';
 import 'package:learning_flutter_tools/widget/my_list_tile_widget.dart';
+import 'package:learning_flutter_tools/widget/my_radio.dart';
+import 'package:learning_flutter_tools/widget/personal_list_tile.dart';
 import 'dart:developer' as developer;
 import 'model/chat.dart';
 import 'model/message.dart';
@@ -107,184 +111,117 @@ class _MessengerScreen extends State<MessengerScreen> {
       body: Center(
         child: indexChatOn == -1 ? const Text("SEM CHAT") : ChatWidget(idClient, chatsList[indexChatOn]),
       ),
-      endDrawer: Drawer(
-        child: Column(
-          children: [
-            myDrawerHeader(),
-            myDrawerList(),
-            myDrawerFooter(),
-          ],
+      endDrawer: MyDrawer(
+        headerTitle: const ListTile(
+          title: Text('Messages'),
         ),
-      ),
-    );
-  }
-
-  Widget myDrawerHeader() {
-    return const DrawerHeader(
-      child: ListTile(
-        title: Text('Messages'),
-      ),
-      decoration: BoxDecoration(color: Colors.blueGrey),
-    );
-  }
-
-  Widget myDrawerList() {
-    return Expanded(
-      child: ListView.builder(
-          // controller: listViewScrollController,
-          padding: EdgeInsets.zero,
-          itemCount: chatsList.length,
-          itemBuilder: (context, index) {
-            Chat obj = chatsList[index];
-            return obj is PersonalChat
-                ? personListTile(index: index, personName: "Person ${obj.idReceveir}")
-                : obj is GroupChat
-                    ? groupListTile(index: index, groupName: obj.title)
-                    : Container();
-          }),
-    );
-  }
-
-  Widget myDrawerFooter() {
-    return Align(
-      alignment: FractionalOffset.bottomCenter,
-      child: Column(
-        children: <Widget>[
-          const Divider(
-            thickness: 1,
-            indent: 10,
-            endIndent: 10,
-            color: Color.fromARGB(255, 208, 208, 208),
-          ),
-          GestureDetector(
-            onTap: () {
-              developer.log("Creating a new group", name: messengerScreen);
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return StatefulBuilder(
-                    builder: (context, setState) => Modal(
-                      headerTitle: "New Chat",
-                      body: createNewChatModalBody(setState),
-                      modalButtons: ModalButtons.cancelAndCreate,
-                      footerButtonTap: [
-                        () {
-                          developer.log("Cancel Button of New Chat", name: messengerScreen);
-                          Navigator.pop(context);
-                        },
-                        () {
-                          developer.log("Create Button of New Chat", name: messengerScreen);
-                        },
-                      ],
-                    ),
-                  );
-                },
-              );
-            },
-            child: const MyListTile(
-              leading: Icon(Icons.add),
-              title: 'New Chat',
-            ),
-          ),
+        body: drawerBody(),
+        footerBody: [
+          drawerFooterBody(),
         ],
       ),
     );
   }
 
-  Widget createNewChatModalBody(StateSetter setState) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Row(
-              children: [
-                Radio(
-                  value: 1,
-                  groupValue: radioValue,
-                  onChanged: (int? value) {
-                    setState(() {
-                      radioValue = value;
-                    });
-                  },
-                  visualDensity: const VisualDensity(
-                    horizontal: VisualDensity.minimumDensity,
-                    vertical: VisualDensity.minimumDensity,
-                  ),
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                ),
-                const Text("Personal")
-              ],
-            ),
-            Row(
-              children: [
-                Radio(
-                  value: 2,
-                  groupValue: radioValue,
-                  onChanged: (int? value) {
-                    setState(() {
-                      radioValue = value;
-                    });
-                  },
-                  visualDensity: const VisualDensity(
-                    horizontal: VisualDensity.minimumDensity,
-                    vertical: VisualDensity.minimumDensity,
-                  ),
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                ),
-                const Text("Group")
-              ],
-            ),
-          ],
-        ),
-        radioValue == 1
-            ? const Text("Personal Body")
-            : radioValue == 2
-                ? const Text("Group Body")
-                : const Text("Hello body"),
-      ],
+  Widget drawerBody() {
+    return ListView.builder(
+      // controller: listViewScrollController,
+      padding: EdgeInsets.zero,
+      itemCount: chatsList.length,
+      itemBuilder: (context, index) {
+        Chat obj = chatsList[index];
+        return obj is PersonalChat
+            ? personalListTile(obj, index)
+            : obj is GroupChat
+                ? groupListTile(obj, index)
+                : Container();
+      },
     );
   }
 
-  Widget groupListTile({int? index, String? groupName}) {
-    GroupChat gc = chatsList[index!] as GroupChat;
-    return MyListTile(
-      leading: const Icon(Icons.group),
-      title: groupName,
-      trailing1: idClient == gc.idAdmin ? const Icon(Icons.edit) : null,
-      trailing2: const Icon(Icons.delete),
-      onTap1: () {
-        developer.log("Editing groupe <${gc.title}>", name: messengerScreen);
+  Widget drawerFooterBody() {
+    return GestureDetector(
+      onTap: () {
+        developer.log("Creating a new group", name: messengerScreen);
         showDialog(
           context: context,
           builder: (BuildContext context) {
-            return Modal(
-              headerTitle: gc.title,
-              modalButtons: ModalButtons.cancelAndAccept,
+            return StatefulBuilder(
+              builder: (context, setState) => Modal(
+                headerTitle: "New Chat",
+                body: createNewChatModalBody(setState),
+                modalButtons: ModalButtons.cancelAndCreate,
+                footerButtonTap: [
+                  () {
+                    developer.log("Cancel Button of New Chat", name: messengerScreen);
+                    Navigator.pop(context);
+                  },
+                  () {
+                    developer.log("Create Button of New Chat", name: messengerScreen);
+                  },
+                ],
+              ),
             );
           },
         );
       },
-      onTap2: () {
-        developer.log("Deleting groupe <${gc.title}>", name: messengerScreen);
-      },
-      onTapTile: () {
+      child: const MyListTile(
+        leading: Icon(Icons.add),
+        title: 'New Chat',
+      ),
+    );
+  }
+
+  Widget createNewChatModalBody(StateSetter setState) {
+    return StatefulBuilder(
+      builder: (context, setState) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              MyRadio(
+                name: "Personal",
+                value: 1,
+                groupValue: radioValue,
+                radioChange: (dynamic value) {
+                  setState(() {
+                    radioValue = value;
+                  });
+                },
+              ),
+              MyRadio(
+                name: "Group",
+                value: 2,
+                groupValue: radioValue,
+                radioChange: (dynamic value) {
+                  setState(() {
+                    radioValue = value;
+                  });
+                },
+              ),
+            ],
+          ),
+          radioValue == 1
+              ? const Text("Personal Body")
+              : radioValue == 2
+                  ? const Text("Group Body")
+                  : const Text("Hello body"),
+        ],
+      ),
+    );
+  }
+
+  Widget personalListTile(PersonalChat pc, int index) {
+    return PersonalListTile(
+      title: "Person ${pc.idReceveir}",
+      tileTap: () {
         setState(() {
           indexChatOn = index;
         });
         Navigator.pop(context);
       },
-    );
-  }
-
-  Widget personListTile({int? index, String? personName}) {
-    PersonalChat pc = chatsList[index!] as PersonalChat;
-    return MyListTile(
-      leading: const Icon(Icons.person),
-      title: personName,
-      trailing2: const Icon(Icons.delete),
-      onTap2: () {
+      onDelete: () {
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -297,18 +234,40 @@ class _MessengerScreen extends State<MessengerScreen> {
                   Navigator.pop(context);
                 },
                 () {
-                  developer.log("Deleting person <${pc.idReceveir}>", name: messengerScreen);
+                  developer.log("Deleting person <Person ${pc.idReceveir}>", name: messengerScreen);
                 }
               ],
             );
           },
         );
       },
-      onTapTile: () {
+    );
+  }
+
+  Widget groupListTile(GroupChat gc, int index) {
+    return GroupListTile(
+      title: gc.title,
+      clientIsAdmin: idClient == gc.idAdmin,
+      tileTap: () {
         setState(() {
           indexChatOn = index;
         });
         Navigator.pop(context);
+      },
+      onDelete: () {
+        developer.log("Deleting groupe <${gc.title}>", name: messengerScreen);
+      },
+      onEdit: () {
+        developer.log("Editing groupe <${gc.title}>", name: messengerScreen);
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return Modal(
+              headerTitle: gc.title,
+              modalButtons: ModalButtons.cancelAndAccept,
+            );
+          },
+        );
       },
     );
   }
