@@ -205,7 +205,25 @@ class _MessengerScreen extends State<MessengerScreen> {
           radioValue == 1
               ? const Text("Personal Body")
               : radioValue == 2
-                  ? const Text("Group Body")
+                  ? Column(
+                      children: [
+                        Row(
+                          children: const [
+                            Text("Group Name: "),
+                            Expanded(
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 20.0),
+                                child: TextField(
+                                  decoration: InputDecoration(
+                                    border: UnderlineInputBorder(),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    )
                   : const Text("Hello body"),
         ],
       ),
@@ -235,6 +253,10 @@ class _MessengerScreen extends State<MessengerScreen> {
                 },
                 () {
                   developer.log("Deleting person <Person ${pc.idReceveir}>", name: messengerScreen);
+                  setState(() {
+                    chatsList.removeAt(index);
+                  });
+                  Navigator.pop(context);
                 }
               ],
             );
@@ -255,7 +277,28 @@ class _MessengerScreen extends State<MessengerScreen> {
         Navigator.pop(context);
       },
       onDelete: () {
-        developer.log("Deleting groupe <${gc.title}>", name: messengerScreen);
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return Modal(
+              headerTitle: "Delete",
+              body: Text("Are you sure you want to delete ${gc.title}?"),
+              modalButtons: ModalButtons.noAndYes,
+              footerButtonTap: [
+                () {
+                  Navigator.pop(context);
+                },
+                () {
+                  developer.log("Deleting group <${gc.title}>", name: messengerScreen);
+                  setState(() {
+                    chatsList.removeAt(index);
+                  });
+                  Navigator.pop(context);
+                }
+              ],
+            );
+          },
+        );
       },
       onEdit: () {
         developer.log("Editing groupe <${gc.title}>", name: messengerScreen);
